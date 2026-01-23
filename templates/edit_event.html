@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Event - IT Department Portal{% endblock %}
+
+{% block content %}
+<style>
+.edit-header {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    color: white;
+    padding: 2rem 0;
+    margin: -1rem -1rem 2rem -1rem;
+    border-radius: 0 0 15px 15px;
+}
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+}
+.form-control:focus {
+    border-color: #2575fc;
+    box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+}
+.btn-primary {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
+
+<div class="edit-header">
+    <div class="container">
+        <h1 class="mb-0"><i class="bi bi-pencil-square me-3"></i>Edit Event</h1>
+        <p class="mb-0 mt-2">Update event details</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <form method="POST" action="{{ url_for('edit_event', event_id=event.id) }}" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="event_title" class="form-label fw-semibold">Event Title</label>
+                        <input type="text" name="title" class="form-control" id="event_title" value="{{ event.title }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="event_date" class="form-label fw-semibold">Event Date</label>
+                        <input type="date" name="event_date" class="form-control" id="event_date" value="{{ event.event_date.strftime('%Y-%m-%d') }}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="event_manager" class="form-label fw-semibold">Event Manager Name</label>
+                        <input type="text" name="event_manager" class="form-control" id="event_manager" value="{{ event.event_manager or '' }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="contact_number" class="form-label fw-semibold">Contact Number</label>
+                        <input type="tel" name="contact_number" class="form-control" id="contact_number" value="{{ event.contact_number or '' }}" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="event_description" class="form-label fw-semibold">Event Description</label>
+                    <textarea name="description" class="form-control" id="event_description" rows="4">{{ event.description or '' }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="image_file" class="form-label fw-semibold">Event Poster Image</label>
+                    <input type="file" name="image_file" class="form-control" id="image_file" accept=".png,.jpg,.jpeg">
+                    {% if event.image_file %}
+                    <div class="form-text">Current image: {{ event.image_file }}. Upload a new one to replace.</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>Update Event
+                </button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary ms-2">
+                    <i class="bi bi-arrow-left me-2"></i>Cancel
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

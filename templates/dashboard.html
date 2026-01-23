@@ -32,11 +32,14 @@
     border-radius: 10px;
     margin-right: 0.5rem;
     border: 2px solid #e9ecef;
+    background-color: rgb(179, 179, 179);
     color: #6c757d;
 }
 .nav-pills .nav-link.active {
     background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
     border-color: #2575fc;
+    color: white;
+    
 }
 .tab-content {
     background: white;
@@ -44,24 +47,6 @@
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     padding: 2rem;
     margin-top: 1rem;
-}
-.form-control {
-    border-radius: 10px;
-    border: 2px solid #e9ecef;
-}
-.form-control:focus {
-    border-color: #2575fc;
-    box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
-}
-.btn-primary {
-    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
-    border: none;
-    border-radius: 10px;
-    padding: 0.75rem 1.5rem;
-}
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 </style>
 
@@ -72,122 +57,238 @@
     </div>
 </div>
 
-<!-- Stats Row -->
 <div class="row mb-4">
     <div class="col-md-4 mb-3">
         <div class="stats-card">
             <i class="bi bi-calendar-event-fill fs-1 text-primary mb-2"></i>
-            <div class="stats-number">12</div>
+            <div class="stats-number">{{ events|length }}</div>
             <div class="text-muted">Total Events</div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
         <div class="stats-card">
             <i class="bi bi-trophy-fill fs-1 text-warning mb-2"></i>
-            <div class="stats-number">8</div>
-            <div class="text-muted">Achievements</div>
+            <div class="stats-number">{{ photos|length }}</div>
+            <div class="text-muted">Gallery Photos</div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
         <div class="stats-card">
             <i class="bi bi-file-earmark-text-fill fs-1 text-success mb-2"></i>
-            <div class="stats-number">24</div>
+            <div class="stats-number">{{ materials|length }}</div>
             <div class="text-muted">Study Materials</div>
         </div>
     </div>
 </div>
 
-<!-- Nav Pills -->
 <ul class="nav nav-pills justify-content-center mb-4" id="dashboardTabs" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="events-tab" data-bs-toggle="pill" data-bs-target="#events" type="button" role="tab" aria-controls="events" aria-selected="true">
+        <button class="nav-link active" id="events-tab" data-bs-toggle="pill" data-bs-target="#events" type="button" role="tab">
             <i class="bi bi-calendar-plus me-2"></i>Post Event
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="achievements-tab" data-bs-toggle="pill" data-bs-target="#achievements" type="button" role="tab" aria-controls="achievements" aria-selected="false">
-            <i class="bi bi-trophy me-2"></i>Post Achievement
+        <button class="nav-link" id="achievements-tab" data-bs-toggle="pill" data-bs-target="#achievements" type="button" role="tab">
+            <i class="bi bi-trophy me-2"></i>Post Event Photos
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="materials-tab" data-bs-toggle="pill" data-bs-target="#materials" type="button" role="tab" aria-controls="materials" aria-selected="false">
+        <button class="nav-link" id="materials-tab" data-bs-toggle="pill" data-bs-target="#materials" type="button" role="tab">
             <i class="bi bi-cloud-upload me-2"></i>Upload Material
         </button>
     </li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane fade show active" id="events" role="tabpanel" aria-labelledby="events-tab">
+    
+    <div class="tab-pane fade show active" id="events" role="tabpanel">
         <h4 class="mb-4"><i class="bi bi-calendar-plus text-primary me-2"></i>Add New Event</h4>
-        <form method="POST" action="{{ url_for('add_event') }}">
+        <form method="POST" action="{{ url_for('add_event') }}" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="event_title" class="form-label fw-semibold">Event Title</label>
-                    <input type="text" name="title" class="form-control" id="event_title" placeholder="Enter event title" required>
+                    <label class="form-label fw-semibold">Event Title</label>
+                    <input type="text" name="title" class="form-control" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="event_date" class="form-label fw-semibold">Event Date</label>
-                    <input type="date" name="event_date" class="form-control" id="event_date" required>
+                    <label class="form-label fw-semibold">Event Date</label>
+                    <input type="date" name="event_date" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Event Manager</label>
+                    <input type="text" name="event_manager" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Contact Number</label>
+                    <input type="tel" name="contact_number" class="form-control" required>
                 </div>
             </div>
             <div class="mb-3">
-                <label for="event_description" class="form-label fw-semibold">Event Description</label>
-                <textarea name="description" class="form-control" id="event_description" rows="4" placeholder="Describe the event..."></textarea>
+                <label class="form-label fw-semibold">Description</label>
+                <textarea name="description" class="form-control" rows="3"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>Add Event
-            </button>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Event Poster</label>
+                <input type="file" name="image_file" class="form-control" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Add Event</button>
         </form>
+
+        <h5 class="mt-5 mb-3"><i class="bi bi-list-ul me-2"></i>Manage Events</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Manager</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.event_date }}</td>
+                        <td>{{ event.event_manager }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                            <form action="{{ url_for('delete_event', event_id=event.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this event?')">
+                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="tab-pane fade" id="achievements" role="tabpanel" aria-labelledby="achievements-tab">
-        <h4 class="mb-4"><i class="bi bi-trophy text-warning me-2"></i>Add New Achievement</h4>
-        <form method="POST" action="{{ url_for('add_achievement') }}">
-            <div class="mb-3">
-                <label for="achievement_title" class="form-label fw-semibold">Achievement Title</label>
-                <input type="text" name="title" class="form-control" id="achievement_title" placeholder="Enter achievement title" required>
+    <div class="tab-pane fade" id="achievements" role="tabpanel">
+        <h4 class="mb-4"><i class="bi bi-images text-warning me-2"></i>Upload to Gallery</h4>
+        <div class="card shadow-sm mb-5 border-0 bg-light">
+            <div class="card-body">
+                <form action="{{ url_for('upload_photo') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Select Photo</label>
+                        <input type="file" name="image_file" class="form-control" required accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Caption</label>
+                        <input type="text" name="caption" class="form-control" placeholder="e.g. Workshop Highlights">
+                    </div>
+                    <button type="submit" class="btn btn-success">Upload Photo</button>
+                </form>
             </div>
-            <div class="mb-3">
-                <label for="achievement_content" class="form-label fw-semibold">Achievement Description</label>
-                <textarea name="content" class="form-control" id="achievement_content" rows="4" placeholder="Describe the achievement..."></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="image_url" class="form-label fw-semibold">Image URL (Optional)</label>
-                <input type="url" name="image_url" class="form-control" id="image_url" placeholder="https://example.com/image.jpg">
-            </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-plus-circle me-2"></i>Add Achievement
-            </button>
-        </form>
+        </div>
+
+        <h5 class="mt-5 mb-3"><i class="bi bi-gear me-2"></i>Manage Gallery Photos</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Photo</th>
+                        <th>Caption</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for photo in photos %}
+                    <tr>
+                        <td><img src="{{ url_for('static', filename='uploads/' + photo.image_file) }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td>{{ photo.caption }}</td>
+                        <td>
+                            <a href="{{ url_for('edit_photo', photo_id=photo.id) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
+                            <form action="{{ url_for('delete_photo', photo_id=photo.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this photo?')">
+                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="tab-pane fade" id="materials" role="tabpanel" aria-labelledby="materials-tab">
+    <div class="tab-pane fade" id="materials" role="tabpanel">
         <h4 class="mb-4"><i class="bi bi-cloud-upload text-success me-2"></i>Upload Study Material</h4>
         <form method="POST" action="{{ url_for('add_material') }}">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Material Title</label>
+                <input type="text" name="title" class="form-control" required placeholder="e.g. Java Notes Unit 1">
+            </div>
             <div class="row">
-                <div class="col-md-8 mb-3">
-                    <label for="material_title" class="form-label fw-semibold">Material Title</label>
-                    <input type="text" name="title" class="form-control" id="material_title" placeholder="Enter material title" required>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Subject</label>
+                    <input type="text" name="subject" class="form-control" required>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label for="subject" class="form-label fw-semibold">Subject</label>
-                    <input type="text" name="subject" class="form-control" id="subject" placeholder="e.g., Data Structures">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label fw-semibold">Target Year</label>
+                    <select name="target_year" class="form-control" required>
+                        <option value="">Select</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label fw-semibold">Semester</label>
+                    <select name="semester" class="form-control" required>
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    </select>
                 </div>
             </div>
             <div class="mb-3">
-                <label for="file_link" class="form-label fw-semibold">File Link</label>
-                <input type="url" name="file_link" class="form-control" id="file_link" placeholder="https://example.com/material.pdf" required>
+                <label class="form-label fw-semibold">File Link (Google Drive/URL)</label>
+                <input type="url" name="file_link" class="form-control" required placeholder="https://...">
             </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-upload me-2"></i>Upload Material
-            </button>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-2"></i>Upload Material</button>
         </form>
+
+        <h5 class="mt-5 mb-3"><i class="bi bi-gear me-2"></i>Manage Study Materials</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Subject</th>
+                        <th>Year/Sem</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mat in materials %}
+                    <tr>
+                        <td>
+                            <div class="fw-bold">{{ mat.title }}</div>
+                            <a href="{{ mat.file_link }}" target="_blank" class="small text-decoration-none"><i class="bi bi-link-45deg"></i> Link</a>
+                        </td>
+                        <td>{{ mat.subject }}</td>
+                        <td>
+                            <span class="badge bg-secondary">{{ mat.target_year }}</span>
+                            <span class="badge bg-info text-dark">Sem {{ mat.semester }}</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('edit_material', id=mat.id) }}" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i></a>
+                            <form action="{{ url_for('delete_material', id=mat.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this material?')">
+                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No materials found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div class="text-center mt-4">
-    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
-        <i class="bi bi-box-arrow-right me-2"></i>Logout
-    </a>
+    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
 </div>
 {% endblock %}

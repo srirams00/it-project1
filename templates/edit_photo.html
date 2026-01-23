@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Photo - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning text-dark fw-bold">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Photo Caption
+                </div>
+                <div class="card-body">
+                    
+                    <div class="text-center mb-4">
+                        <label class="form-label text-muted small">Current Photo</label>
+                        <div class="bg-light p-3 rounded">
+                            <img src="{{ url_for('static', filename='uploads/' + photo.image_file) }}" 
+                                 class="img-fluid rounded shadow-sm" 
+                                 style="max-height: 200px;" 
+                                 alt="Current Photo">
+                        </div>
+                    </div>
+
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label for="caption" class="form-label fw-bold">Caption</label>
+                            <input type="text" 
+                                   name="caption" 
+                                   class="form-control form-control-lg" 
+                                   id="caption" 
+                                   value="{{ photo.caption }}" 
+                                   placeholder="Enter new caption..." 
+                                   required>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>Update Caption
+                            </button>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

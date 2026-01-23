@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Upcoming Events - IT Department{% endblock %}
+
+{% block content %}
+<style>
+/* This matches your Study Materials & Details Header style */
+.page-header {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    color: white;
+    padding: 3rem 0;
+    margin: -1rem -1rem 2rem -1rem;
+    border-radius: 0 0 15px 15px;
+}
+.hover-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
+</style>
+
+<header class="page-header-bg">
+    <ul class="circles"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>
+    <div class="container text-center position-relative z-2">
+        <h1 class="display-4 fw-bold mb-2">Upcoming Events</h1>
+        <p class="lead text-white-50">Workshops, Seminars, and Hackathons</p>
+    </div>
+</header>
+
+<div class="container mb-5">
+    <div class="row g-4">
+        {% if events %}
+            {% for event in events %}
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div style="height: 200px; overflow: hidden; background: #eee;">
+                        {% if event.image_file %}
+                            <img src="{{ url_for('static', filename='uploads/' + event.image_file) }}" class="w-100 h-100 object-fit-cover" alt="Event">
+                        {% else %}
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                <i class="bi bi-calendar-event fs-1"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">{{ event.event_date }}</span>
+                        <h5 class="card-title fw-bold">{{ event.title }}</h5>
+                        <p class="card-text text-muted small">{{ event.description[:100] }}...</p>
+                        <a href="{{ url_for('event_detail', event_id=event.id) }}" class="btn btn-outline-primary btn-sm w-100 mt-2">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded shadow-sm">
+                    <h3>No upcoming events.</h3>
+                    <p class="text-muted">Check back later!</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

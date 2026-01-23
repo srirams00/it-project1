@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Event Gallery - IT Department{% endblock %}
+
+{% block content %}
+<style>
+.gallery-header {
+    background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    color: white;
+    padding: 3rem 0;
+    margin: -1rem -1rem 2rem -1rem;
+    border-radius: 0 0 15px 15px;
+}
+.gallery-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    overflow: hidden;
+    cursor: pointer; /* Shows the hand icon to indicate it's clickable */
+}
+.gallery-card:hover {
+    transform: translateY(-10px); /* Lifts up higher */
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.175) !important; /* Stronger shadow */
+}
+</style>
+
+<header class="page-header-bg">
+    <ul class="circles"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>
+    <div class="container text-center position-relative z-2">
+        <h1 class="display-4 fw-bold mb-2">Event Gallery</h1>
+        <p class="lead text-white-50">Capturing our department's best moments</p>
+    </div>
+</header>
+
+<div class="container mb-5">
+    <div class="row g-4">
+        {% if photos %}
+            {% for photo in photos %}
+            <div class="col-md-4 col-sm-6" data-aos="zoom-in" data-aos-delay="{{ loop.index * 50 }}">
+                <div class="card border-0 shadow-lg hover-card h-100" 
+                     style="cursor: pointer; overflow: hidden; border-radius: 15px;"
+                     data-bs-toggle="modal" 
+                     data-bs-target="#photoModal" 
+                     data-src="{{ url_for('static', filename='uploads/' + photo.image_file) }}">
+                    
+                    <div class="position-relative overflow-hidden" style="height: 250px;">
+                        <img src="{{ url_for('static', filename='uploads/' + photo.image_file) }}" 
+                             class="w-100 h-100 object-fit-cover transition-transform" 
+                             alt="Gallery Photo"
+                             style="transition: transform 0.5s ease;">
+                    </div>
+                    
+                    {% if photo.caption %}
+                    <div class="card-footer bg-white border-0 text-center py-3">
+                        <p class="mb-0 text-muted fw-bold small">{{ photo.caption }}</p>
+                        <small class="text-muted" style="font-size: 0.7rem;">{{ photo.upload_date }}</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="p-5 bg-white rounded-3 shadow-sm border border-dashed" data-aos="fade-up">
+                    <i class="bi bi-camera-fill fs-1 text-muted mb-3"></i>
+                    <h3 class="text-muted">No photos yet</h3>
+                    <p class="text-muted">New event photos will appear here soon.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .hover-card:hover img { transform: scale(1.1); }
+</style>
+{% endblock %}

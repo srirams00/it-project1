@@ -4,6 +4,7 @@
 
 {% block content %}
 <style>
+/* CSS styles kept exactly as you had them */
 .event-header {
     background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
     color: white;
@@ -11,52 +12,22 @@
     margin: -1rem -1rem 2rem -1rem;
     border-radius: 0 0 15px 15px;
 }
-.event-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-.event-meta {
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
-.event-description {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    margin-bottom: 2rem;
-}
+.event-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem; }
+.event-meta { font-size: 1.1rem; opacity: 0.9; }
+.event-description { font-size: 1.1rem; line-height: 1.7; margin-bottom: 2rem; }
 .registration-box {
-    background-color: #f8f9fa;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    padding: 2rem;
-    margin: 2rem 0;
-    text-align: center;
+    background-color: #f8f9fa; border: 2px solid #e9ecef; border-radius: 10px;
+    padding: 2rem; margin: 2rem 0; text-align: center;
 }
-.registration-title {
-    color: #2575fc;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-.contact-info {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-}
+.registration-title { color: #2575fc; font-weight: bold; margin-bottom: 1rem; }
+.contact-info { font-size: 1.1rem; margin-bottom: 1.5rem; }
 .btn-back {
     background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
-    border: none;
-    border-radius: 25px;
-    padding: 0.75rem 2rem;
-    font-weight: 600;
-    color: white;
-    text-decoration: none;
-    display: inline-block;
-    transition: transform 0.2s ease;
+    border: none; border-radius: 25px; padding: 0.75rem 2rem;
+    font-weight: 600; color: white; text-decoration: none;
+    display: inline-block; transition: transform 0.2s ease;
 }
-.btn-back:hover {
-    transform: translateY(-2px);
-    color: white;
-}
+.btn-back:hover { transform: translateY(-2px); color: white; }
 </style>
 
 <div class="event-header">
@@ -64,15 +35,25 @@
         <h1 class="event-title">{{ event.title }}</h1>
         <div class="event-meta">
             <i class="bi bi-calendar-event me-2"></i>
-            Event Date: {{ event.event_date.strftime('%B %d, %Y') }}
+            Event Date: {{ event.event_date }}
         </div>
     </div>
 </div>
 
+{% if event.image_file %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <img src="{{ url_for('static', filename='uploads/' + event.image_file) }}" class="img-fluid rounded mb-4 shadow" alt="Event Poster" style="max-height: 500px;">
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="event-description">
+            <div class="event-description text-secondary">
                 {{ event.description }}
             </div>
 
@@ -83,13 +64,15 @@
                 </h3>
                 <p class="mb-3">To register for this event, please contact the Student Coordinator:</p>
                 <div class="contact-info">
-                    <i class="bi bi-telephone-fill me-2"></i>
-                    📞 +91 98765 43210
+                    <strong>Contact:</strong> {{ event.event_manager }}<br>
+                    <a href="tel:{{ event.contact_number }}" class="text-decoration-none">
+                        <i class="bi bi-telephone-fill me-2"></i> {{ event.contact_number }}
+                    </a>
                 </div>
-                <p class="text-muted">Registration is required to participate in the event.</p>
+                <p class="text-muted small">Registration is required to participate in the event.</p>
             </div>
 
-            <div class="text-center">
+            <div class="text-center mb-5">
                 <a href="{{ url_for('events') }}" class="btn-back">
                     <i class="bi bi-arrow-left me-2"></i>
                     Back to Events
