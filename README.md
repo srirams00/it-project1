@@ -22,12 +22,12 @@ A comprehensive **Content Management System (CMS)** built for the Department of 
 
 | **Home Page** | **Admin Dashboard** |
 |:---:|:---:|
-| <img src="https://via.placeholder.com/400x200?text=Home+Page+Preview" width="400"> | <img src="https://via.placeholder.com/400x200?text=Admin+Dashboard" width="400"> |
+| <img src="screenshots/image1.png" width="400"> | <img src="screenshots/image2.png" width="400"> |
 | *Modern landing page with animations* | *Secure control panel for admins* |
 
 | **Study Materials** | **Activity Logs** |
 |:---:|:---:|
-| <img src="https://via.placeholder.com/400x200?text=Study+Materials" width="400"> | <img src="https://via.placeholder.com/400x200?text=Activity+Logs" width="400"> |
+| <img src="screenshots/image3.png" width="400"> | <img src="screenshots/image4.png" width="400"> |
 | *Filterable resources by Year/Sem* | *Track admin actions and security* |
 
 *(Note: These are placeholders. You can upload real screenshots to your repo and paste the links here later!)*
