@@ -48,7 +48,6 @@ We plan to upgrade this project with the following features:
 
 **Silvest**
 * *2nd Year BCA Student*
-* *Full Stack Developer*
 * *Department of Information Technology*
 
 ---
