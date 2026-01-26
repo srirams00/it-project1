@@ -75,6 +75,16 @@ def create_database():
         """)
         print("Table 'activity_logs' created successfully")
 
+        # 8. Create Anonymous Feedback Table (Student Voice)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                message TEXT NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        print("Table 'feedback' created successfully")
+
         connection.commit()
 
     except sqlite3.Error as e:

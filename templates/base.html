@@ -406,6 +406,120 @@
             margin-top: auto;
             background: var(--footer-bg) !important;
         }
+
+        /* 10. FLOATING FEEDBACK WIDGET */
+        .feedback-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .feedback-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 20px rgba(37, 117, 252, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 30px rgba(37, 117, 252, 0.6);
+        }
+
+        .feedback-popup {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 320px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px var(--card-shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .feedback-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .feedback-header {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-close-popup {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-close-popup:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .feedback-body {
+            padding: 20px;
+        }
+
+        .feedback-body textarea {
+            resize: none;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .feedback-body textarea:focus {
+            border-color: #2575fc;
+            box-shadow: 0 0 0 0.2rem rgba(37, 117, 252, 0.25);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 576px) {
+            .feedback-widget {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .feedback-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 1.3rem;
+            }
+
+            .feedback-popup {
+                width: calc(100vw - 40px);
+                right: -10px;
+            }
+        }
     </style>
 </head>
 
@@ -481,6 +595,34 @@
     </nav>
 
     {% block content %}{% endblock %}
+
+    <!-- Floating Feedback Widget -->
+    <div class="feedback-widget">
+        <!-- Popup Card -->
+        <div class="feedback-popup" id="feedbackPopup">
+            <div class="feedback-header">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-chat-heart me-2"></i>Student Voice</h6>
+                <button class="btn-close-popup" onclick="toggleFeedbackWidget()" title="Close">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="feedback-body">
+                <p class="small text-muted mb-3">Share your thoughts anonymously. Your voice matters!</p>
+                <form id="feedbackForm" method="POST" action="{{ url_for('submit_feedback') }}">
+                    <textarea name="message" class="form-control mb-3" rows="4" placeholder="What's on your mind? 💭"
+                        required maxlength="500"></textarea>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="bi bi-send me-2"></i>Send Anonymously
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Floating Button -->
+        <button class="feedback-btn" onclick="toggleFeedbackWidget()" title="Share Feedback">
+            <i class="bi bi-chat-dots-fill"></i>
+        </button>
+    </div>
 
     <footer class="text-white text-center py-4">
         <div class="container">
@@ -593,8 +735,11 @@
             document.getElementById('loadingOverlay').classList.remove('show');
         }
 
-        // Auto-show loading on form submit
+        // Auto-show loading on form submit (excluding AJAX forms)
         document.querySelectorAll('form').forEach(form => {
+            // Skip the feedback form as it uses AJAX
+            if (form.id === 'feedbackForm') return;
+
             form.addEventListener('submit', function () {
                 showLoading();
             });
@@ -652,6 +797,72 @@
             if (modal && modal.classList.contains('show')) {
                 if (e.key === 'ArrowLeft') navigatePhoto(-1);
                 if (e.key === 'ArrowRight') navigatePhoto(1);
+            }
+        });
+
+        // ========== FEEDBACK WIDGET ==========
+        function toggleFeedbackWidget() {
+            const popup = document.getElementById('feedbackPopup');
+            popup.classList.toggle('show');
+        }
+
+        // Close widget when clicking outside
+        document.addEventListener('click', function (e) {
+            const widget = document.querySelector('.feedback-widget');
+            const popup = document.getElementById('feedbackPopup');
+            if (widget && !widget.contains(e.target) && popup.classList.contains('show')) {
+                popup.classList.remove('show');
+            }
+        });
+
+        // Handle feedback form submission with AJAX
+        document.addEventListener('DOMContentLoaded', function () {
+            const feedbackForm = document.getElementById('feedbackForm');
+            if (feedbackForm) {
+                feedbackForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+
+                    // Disable button and show loading
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => {
+                            // Parse JSON response
+                            return response.json().then(data => ({
+                                ok: response.ok,
+                                status: response.status,
+                                data: data
+                            }));
+                        })
+                        .then(result => {
+                            if (result.ok && result.data.success) {
+                                showToast('Thank you! Your feedback has been submitted anonymously.', 'success');
+                                this.reset();
+                                setTimeout(() => toggleFeedbackWidget(), 1000);
+                            } else {
+                                showToast(result.data.message || 'Something went wrong. Please try again.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Fetch error:', error);
+                            showToast('Network error. Please check your connection.', 'error');
+                        })
+                        .finally(() => {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalText;
+                        });
+                });
             }
         });
     </script>

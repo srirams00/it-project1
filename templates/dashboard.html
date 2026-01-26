@@ -148,6 +148,14 @@
                 <i class="bi bi-cloud-upload me-2"></i>Upload Material
             </button>
         </li>
+        <li class="nav-item">
+            <button class="nav-link" id="inbox-tab" data-bs-toggle="pill" data-bs-target="#inbox">
+                <i class="bi bi-inbox me-2"></i>Inbox
+                {% if feedback_messages|length > 0 %}
+                <span class="badge bg-danger ms-1" id="inboxBadge">{{ feedback_messages|length }}</span>
+                {% endif %}
+            </button>
+        </li>
     </ul>
 
     <div class="tab-content border-0">
@@ -368,6 +376,83 @@
             </div>
         </div>
 
+        <div class="tab-pane fade" id="inbox">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0 text-primary fw-bold">
+                    <i class="bi bi-inbox me-2"></i>Anonymous Feedback Inbox
+                </h4>
+                {% if feedback_messages|length > 0 %}
+                <button type="button" class="btn btn-danger rounded-pill" onclick="confirmClearInbox()">
+                    <i class="bi bi-trash me-2"></i>Clear Inbox
+                </button>
+                {% endif %}
+            </div>
+
+            {% if feedback_messages|length > 0 %}
+            <div class="alert alert-info border-0 mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>{{ feedback_messages|length }}</strong> anonymous message(s) received from students.
+            </div>
+
+            <div class="row">
+                {% for feedback in feedback_messages %}
+                <div class="col-md-6 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary">
+                                    <i class="bi bi-chat-quote me-1"></i>Anonymous
+                                </span>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>{{ feedback.timestamp }}
+                                </small>
+                            </div>
+                            <p class="mb-0 mt-3">{{ feedback.message }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
+                <h5 class="text-muted">No feedback yet</h5>
+                <p class="text-muted">Student feedback will appear here once submitted.</p>
+            </div>
+            {% endif %}
+        </div>
+
     </div>
 </div>
+
+<script>
+    // Hide notification badge when Inbox tab is clicked
+    document.addEventListener('DOMContentLoaded', function () {
+        const inboxTab = document.getElementById('inbox-tab');
+        const inboxBadge = document.getElementById('inboxBadge');
+
+        if (inboxTab && inboxBadge) {
+            inboxTab.addEventListener('shown.bs.tab', function () {
+                // Fade out and remove the badge
+                inboxBadge.style.transition = 'opacity 0.3s';
+                inboxBadge.style.opacity = '0';
+                setTimeout(() => {
+                    inboxBadge.remove();
+                }, 300);
+            });
+        }
+    });
+
+    // Confirm before clearing inbox
+    function confirmClearInbox() {
+        if (confirm('⚠️ Are you sure you want to delete ALL anonymous feedback messages?\n\nThis action cannot be undone!')) {
+            // Create form and submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ url_for("clear_inbox") }}';
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
 {% endblock %}

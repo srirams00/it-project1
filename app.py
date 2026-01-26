@@ -107,8 +107,63 @@ def dashboard():
         count = conn.execute('SELECT COUNT(*) FROM event_registrations WHERE event_id = ?', (event['id'],)).fetchone()[0]
         registrations[event['id']] = count
     
+    # Get anonymous feedback messages (newest first)
+    feedback_messages = conn.execute('SELECT * FROM feedback ORDER BY timestamp DESC').fetchall()
+    
     conn.close()
-    return render_template('dashboard.html', events=events, photos=photos, materials=materials, registrations=registrations)
+    return render_template('dashboard.html', events=events, photos=photos, materials=materials, registrations=registrations, feedback_messages=feedback_messages)
+
+# --- ANONYMOUS FEEDBACK (Student Voice) ---
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    message = request.form.get('message', '').strip()
+    
+    if not message:
+        # Check if it's an AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.content_type == 'application/x-www-form-urlencoded':
+            return jsonify({'success': False, 'message': 'Please enter a message'}), 400
+        flash('Please enter a message', 'error')
+        return redirect(url_for('home'))
+    
+    try:
+        conn = get_db_connection()
+        conn.execute('INSERT INTO feedback (message) VALUES (?)', (message,))
+        conn.commit()
+        conn.close()
+        
+        log_activity("New anonymous feedback submitted")
+        
+        # Return JSON for AJAX requests
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or 'application/json' in request.headers.get('Accept', ''):
+            return jsonify({'success': True, 'message': 'Thank you for your feedback!'}), 200
+        
+        # Regular redirect for non-AJAX requests
+        flash('Thank you for your feedback! Your voice matters.', 'success')
+        return redirect(url_for('home'))
+    except Exception as e:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'An error occurred'}), 500
+        flash('An error occurred. Please try again.', 'error')
+        return redirect(url_for('home'))
+
+@app.route('/clear_inbox', methods=['POST'])
+def clear_inbox():
+    if not session.get('admin'):
+        return redirect(url_for('login'))
+    
+    try:
+        conn = get_db_connection()
+        count = conn.execute('SELECT COUNT(*) FROM feedback').fetchone()[0]
+        conn.execute('DELETE FROM feedback')
+        conn.commit()
+        conn.close()
+        
+        log_activity(f"Cleared {count} feedback message(s) from inbox")
+        flash(f'Successfully deleted {count} feedback message(s).', 'success')
+    except Exception as e:
+        flash('An error occurred while clearing the inbox.', 'error')
+    
+    return redirect(url_for('dashboard'))
 
 # --- EVENTS ---
 @app.route('/events')
