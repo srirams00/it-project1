@@ -408,3 +408,9 @@ footer p {
     transform: translateY(-2px); /* Slight lift effect */
     box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
 }
+
+/* Fix background shapes covering mobile menu */
+.circle, .shape, .decoration, .circles, .hero-circles {
+    z-index: -1 !important;
+    pointer-events: none !important;
+}
