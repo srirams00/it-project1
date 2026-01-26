@@ -40,6 +40,11 @@
         }
 
         /* --- GLOBAL THEME STYLES --- */
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-primary);
@@ -48,6 +53,9 @@
             flex-direction: column;
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
         }
 
         /* 1. ANIMATED HEADER BACKGROUND */
@@ -209,7 +217,7 @@
                 background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
                 padding: 80px 30px 30px 30px;
                 transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 1070;
+                z-index: 1080;
                 box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
                 overflow-y: auto;
             }
@@ -224,11 +232,11 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.5);
+                background: transparent;
                 opacity: 0;
                 visibility: hidden;
                 transition: all 0.3s ease;
-                z-index: 1065;
+                z-index: 1060;
                 pointer-events: none;
             }
 
@@ -263,12 +271,18 @@
                 margin-bottom: 10px;
                 padding: 12px 20px !important;
                 font-size: 1.1rem;
+                pointer-events: auto;
+                position: relative;
+                z-index: 1;
             }
 
             .btn-light,
             .btn-warning {
                 width: 100%;
                 margin-top: 15px;
+                pointer-events: auto;
+                position: relative;
+                z-index: 1;
             }
         }
 
@@ -508,8 +522,11 @@
         /* Mobile Responsive */
         @media (max-width: 576px) {
             .feedback-widget {
+                position: fixed;
                 bottom: 20px;
                 right: 20px;
+                left: auto;
+                z-index: 1050;
             }
 
             .feedback-btn {
@@ -527,10 +544,10 @@
         /* Z-INDEX HIERARCHY */
         /* 
          * 9999 - Loading overlay, toasts (fullscreen critical UI)
-         * 1070 - Mobile menu (topmost interactive element)
-         * 1065 - Mobile overlay (blocks content, allows menu interaction)
-         * 1060 - Navbar (header bar)
-         * 1050 - Feedback widget (accessible but yields to menu)
+         * 1080 - Mobile menu (topmost interactive element, always clickable)
+         * 1060 - Navbar header bar & invisible overlay (for closing menu)
+         * 1050 - Feedback widget (accessible, yields to menu)
+         * Note: Overlay background is transparent (no dim effect)
          */
     </style>
 </head>
