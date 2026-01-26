@@ -152,7 +152,7 @@
             position: absolute;
             top: 0;
             width: 100%;
-            z-index: 1000;
+            z-index: 1060;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -209,7 +209,7 @@
                 background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
                 padding: 80px 30px 30px 30px;
                 transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 1050;
+                z-index: 1070;
                 box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
                 overflow-y: auto;
             }
@@ -228,12 +228,14 @@
                 opacity: 0;
                 visibility: hidden;
                 transition: all 0.3s ease;
-                z-index: 1040;
+                z-index: 1065;
+                pointer-events: none;
             }
 
             .mobile-menu-overlay.show {
                 opacity: 1;
                 visibility: visible;
+                pointer-events: auto;
             }
 
             .mobile-close-btn {
@@ -412,7 +414,8 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            z-index: 1000;
+            z-index: 1050;
+            transition: z-index 0s;
         }
 
         .feedback-btn {
@@ -520,6 +523,15 @@
                 right: -10px;
             }
         }
+
+        /* Z-INDEX HIERARCHY */
+        /* 
+         * 9999 - Loading overlay, toasts (fullscreen critical UI)
+         * 1070 - Mobile menu (topmost interactive element)
+         * 1065 - Mobile overlay (blocks content, allows menu interaction)
+         * 1060 - Navbar (header bar)
+         * 1050 - Feedback widget (accessible but yields to menu)
+         */
     </style>
 </head>
 
