@@ -1,4 +1,4 @@
-# 🎓 IT Department Portal
+# 🎓 Bachelor of Computer Application
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-2.0-green?style=for-the-badge&logo=flask&logoColor=white)
